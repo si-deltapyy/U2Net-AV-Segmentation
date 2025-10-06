@@ -18,16 +18,16 @@ from utils import (
 LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
-NUM_EPOCHS = 3
-NUM_WORKERS = 2
+NUM_EPOCHS = 100
+NUM_WORKERS = 10
 IMAGE_HEIGHT = 160  # 1280 originally
 IMAGE_WIDTH = 240  # 1918 originally
 PIN_MEMORY = True
 LOAD_MODEL = False
 TRAIN_IMG_DIR = "data/AV_groundTruth/training/images/"
-TRAIN_MASK_DIR = "data/AV_groundTruth/training/mask/"
+TRAIN_MASK_DIR = "data/AV_groundTruth/training/av/"
 VAL_IMG_DIR = "data/AV_groundTruth/test/images/"
-VAL_MASK_DIR = "data/AV_groundTruth/test/mask/"
+VAL_MASK_DIR = "data/AV_groundTruth/test/av/"
 
 def train_fn(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader)
@@ -112,12 +112,12 @@ def main():
         save_checkpoint(checkpoint)
 
         # check accuracy
-        check_accuracy(val_loader, model, device=DEVICE)
+        # check_accuracy(val_loader, model, device=DEVICE)
 
-        # print some examples to a folder
-        save_predictions_as_imgs(
-            val_loader, model, folder="saved_images/", device=DEVICE
-        )
+        # # print some examples to a folder
+        # save_predictions_as_imgs(
+        #     val_loader, model, folder="saved_images/", device=DEVICE
+        # )
 
 
 if __name__ == "__main__":
