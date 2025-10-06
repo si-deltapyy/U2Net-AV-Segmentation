@@ -14,8 +14,13 @@ class AVDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, index):
-        img_path = os.path.join(self.images_dir, self.images[index])
-        mask_path = os.path.join(self.masks_dir, self.images[index])
+        image_filename = self.images[index]
+        img_path = os.path.join(self.images_dir, image_filename)
+
+        base_name, extension = os.path.splitext(image_filename)
+        mask_filename = f"{base_name}_mask{extension}"
+        mask_path = os.path.join(self.masks_dir, mask_filename)
+
         image = np.array(Image.open(img_path).convert("RGB"))
         mask = np.array(Image.open(mask_path).convert("L"), dtype=np.float32)
         mask[mask == 255.0] = 1.0
