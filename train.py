@@ -19,15 +19,15 @@ LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
 NUM_EPOCHS = 100
-NUM_WORKERS = 2
-IMAGE_HEIGHT = 160  # 1280 originally
-IMAGE_WIDTH = 240  # 1918 originally
+NUM_WORKERS = 5
+IMAGE_HEIGHT = 2336  # 1280 originally
+IMAGE_WIDTH = 3504  # 1918 originally
 PIN_MEMORY = True
 LOAD_MODEL = False
-TRAIN_IMG_DIR = "data/AV_groundTruth/training/images/"
-TRAIN_MASK_DIR = "data/AV_groundTruth/training/av/"
-VAL_IMG_DIR = "data/AV_groundTruth/test/images/"
-VAL_MASK_DIR = "data/AV_groundTruth/test/av/"
+TRAIN_IMG_DIR = "data/HRF/training/images/"
+TRAIN_MASK_DIR = "data/HRF/training/mask/"
+VAL_IMG_DIR = "data/HRF/test/images/"
+VAL_MASK_DIR = "data/HRF/test/mask/"
 
 def train_fn(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader)
@@ -95,7 +95,7 @@ def main():
     )
     
     if LOAD_MODEL:
-        load_checkpoint(torch.load("UNET-pytorch.pth.tar"), model)
+        load_checkpoint(torch.load("best_model/UNET-pytorch.pth.tar"), model)
         
     scaler = torch.cuda.amp.GradScaler()
     for epoch in range(NUM_EPOCHS):

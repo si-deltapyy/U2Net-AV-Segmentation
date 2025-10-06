@@ -3,7 +3,7 @@ import torchvision
 from dataset import AVDataset
 from torch.utils.data import DataLoader
 
-def save_checkpoint(state, filename="UNET-pytorch.pth.tar"):
+def save_checkpoint(state, filename="best_model/UNET-pytorch.pth.tar"):
     print("=> Saving checkpoint")
     torch.save(state, filename)
 
