@@ -19,7 +19,7 @@ LEARNING_RATE = 1e-4
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
 NUM_EPOCHS = 100
-NUM_WORKERS = 10
+NUM_WORKERS = 2
 IMAGE_HEIGHT = 160  # 1280 originally
 IMAGE_WIDTH = 240  # 1918 originally
 PIN_MEMORY = True
@@ -99,7 +99,6 @@ def main():
         
     scaler = torch.cuda.amp.GradScaler()
     for epoch in range(NUM_EPOCHS):
-        print(f"\n")
         print(f"Epoch {epoch + 1}/{NUM_EPOCHS}")
         print("-" * 10)
         train_fn(train_loader, model, optimizer, loss_fn, scaler)
