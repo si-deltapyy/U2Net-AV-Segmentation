@@ -23,11 +23,11 @@ NUM_WORKERS = 2
 IMAGE_HEIGHT = 160  # 1280 originally
 IMAGE_WIDTH = 240  # 1918 originally
 PIN_MEMORY = True
-LOAD_MODEL = True
+LOAD_MODEL = False
 TRAIN_IMG_DIR = "data/AV_groundTruth/training/images/"
 TRAIN_MASK_DIR = "data/AV_groundTruth/training/mask/"
-VAL_IMG_DIR = "data/AV_groundTruth/training/images/"
-VAL_MASK_DIR = "data/AV_groundTruth/training/mask/"
+VAL_IMG_DIR = "data/AV_groundTruth/test/images/"
+VAL_MASK_DIR = "data/AV_groundTruth/test/mask/"
 
 def train_fn(loader, model, optimizer, loss_fn, scaler):
     loop = tqdm(loader)
@@ -95,10 +95,13 @@ def main():
     )
     
     if LOAD_MODEL:
-        load_checkpoint(torch.load("my_checkpoint.pth.tar"), model)
+        load_checkpoint(torch.load("UNET-pytorch.pth.tar"), model)
         
     scaler = torch.cuda.amp.GradScaler()
     for epoch in range(NUM_EPOCHS):
+        print(f"\n")
+        print(f"Epoch {epoch + 1}/{NUM_EPOCHS}")
+        print("-" * 10)
         train_fn(train_loader, model, optimizer, loss_fn, scaler)
 
         # save model
