@@ -107,6 +107,8 @@ def main():
         checkpoint = {
             "state_dict": model.state_dict(),
             "optimizer": optimizer.state_dict(),
+            "loss": loss_fn,
+            "epoch": epoch,
         }
         save_checkpoint(checkpoint)
 
