@@ -1,0 +1,3 @@
+Fundus images are compressed in tif format. Vessel reference standards and A/V reference standards are compressed in png format.
+The test contains 20 sets. The A/V reference standards are based on the 2nd_manual vessel reference standards of the original DRIVE.
+The training contains 20 sets. The A/V reference standards are based on a modified version of 2st_manual vessel reference standards of the original DRIVE.
