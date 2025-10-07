@@ -11,7 +11,8 @@ import torch.optim as optim
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-from model import UNet  # atau U2NET_full() jika ingin pakai U2NET
+# from model import UNet  # atau U2NET_full() jika ingin pakai U2NET
+from model import U2NET_full
 from utils import (
     load_checkpoint,
     save_checkpoint,
@@ -34,7 +35,7 @@ TRAIN_IMG_DIR = "data/HRF/training/images/"
 TRAIN_MASK_DIR = "data/HRF/training/mask/"
 VAL_IMG_DIR = "data/HRF/test/images/"
 VAL_MASK_DIR = "data/HRF/test/mask/"
-CHECKPOINT_DIR = "checkpoints/"
+CHECKPOINT_DIR = "best_model/"
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 SEED = 42
 # ----------------------------------------------------
@@ -178,7 +179,8 @@ def main():
         ],
     )
 
-    model = UNet(in_channels=3, out_channels=1).to(DEVICE)
+    # model = UNet(in_channels=3, out_channels=1).to(DEVICE)
+    model = U2NET_full().to(DEVICE)
     # jika ingin pakai U2NET_full: from model import U2NET_full ; model = U2NET_full().to(DEVICE)
 
     bce = nn.BCEWithLogitsLoss()
@@ -217,7 +219,8 @@ def main():
         train_loss = train_fn(train_loader, model, optimizer, combined_loss, scaler, DEVICE)
         val_loss, val_dice, val_iou = eval_fn(val_loader, model, combined_loss, DEVICE)
 
-        print(f"Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | Val Dice: {val_dice:.4f} | Val IoU: {val_iou:.4f}")
+        print(f"Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | Val Dice: {val_dice:.4f} | Val IoU: {val_iou:.4f}" )
+        print(f"Best Val IoU: {best_val_iou:.4f} | Best Val Loss: {best_val_loss:.4f}")
 
         # scheduler step by val_loss
         scheduler.step(val_loss)
