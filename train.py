@@ -23,18 +23,18 @@ from utils import (
 
 # -------------- HYPERPARAMS / CONFIG ----------------
 LEARNING_RATE = 1e-4
-BATCH_SIZE = 8                 # kurangi jika OOM; sesuaikan GPU memory
+BATCH_SIZE = 8                
 NUM_EPOCHS = 100
-NUM_WORKERS = 5
-IMAGE_HEIGHT = 2336  # pastikan divisible by 16
-IMAGE_WIDTH = 3504   # pastikan divisible by 16
+NUM_WORKERS = 2
+IMAGE_HEIGHT = 146  
+IMAGE_WIDTH = 219
 PIN_MEMORY = True
 LOAD_MODEL = False
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-TRAIN_IMG_DIR = "data/HRF/training/images/"
-TRAIN_MASK_DIR = "data/HRF/training/mask/"
-VAL_IMG_DIR = "data/HRF/test/images/"
-VAL_MASK_DIR = "data/HRF/test/mask/"
+TRAIN_IMG_DIR = "data/DRIVE_AV/training/images/"
+TRAIN_MASK_DIR = "data/DRIVE_AV/training/av/"
+VAL_IMG_DIR = "data/DRIVE_AV/test/images/"
+VAL_MASK_DIR = "data/DRIVE_AV/test/av/"
 CHECKPOINT_DIR = "best_model/"
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 SEED = 42
@@ -205,7 +205,7 @@ def main():
     )
 
     if LOAD_MODEL:
-        checkpoint = torch.load(os.path.join(CHECKPOINT_DIR, "best_model.pth.tar"), map_location=DEVICE)
+        checkpoint = torch.load(os.path.join(CHECKPOINT_DIR, "best_model_2.pth.tar"), map_location=DEVICE)
         load_checkpoint(checkpoint, model)
 
     scaler = torch.cuda.amp.GradScaler() if torch.cuda.is_available() else None
@@ -214,6 +214,8 @@ def main():
     best_val_loss = float("inf")
 
     for epoch in range(NUM_EPOCHS):
+        print(f"|")
+        print(f"|")
         print(f"Epoch {epoch + 1}/{NUM_EPOCHS}")
         print("-" * 30)
         train_loss = train_fn(train_loader, model, optimizer, combined_loss, scaler, DEVICE)
@@ -241,7 +243,7 @@ def main():
             save_checkpoint(checkpoint, filename=os.path.join(CHECKPOINT_DIR, "best_model.pth.tar"))
             print(f"Saved new best model (IoU={best_val_iou:.4f})")
 
-        # optional: save example predictions
+        # check_accuracy(val_loader, model, device=DEVICE)
         # save_predictions_as_imgs(val_loader, model, folder="saved_images/", device=DEVICE)
 
     print("Training finished.")

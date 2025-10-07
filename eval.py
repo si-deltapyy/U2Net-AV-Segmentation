@@ -4,6 +4,8 @@ import torch.nn as nn
 from tqdm import tqdm
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+from dataset import AVDataset
+from torch.utils.data import DataLoader
 
 from model import U2NET_full  # atau UNet jika kamu ingin uji model lain
 from utils import (
@@ -107,18 +109,21 @@ def main():
     checkpoint = torch.load(CHECKPOINT_PATH, map_location=DEVICE)
     load_checkpoint(checkpoint, model)
 
-    print("📦 Preparing data loader...")
-    _, val_loader = get_loaders(
-        train_dir="",
-        train_maskdir="",
-        val_dir=VAL_IMG_DIR,
-        val_maskdir=VAL_MASK_DIR,
+    print("📦 Preparing validation dataset only...")
+    val_ds = AVDataset(
+        images_dir=VAL_IMG_DIR,
+        masks_dir=VAL_MASK_DIR,
+        transform=val_transform,
+    )
+
+    val_loader = DataLoader(
+        val_ds,
         batch_size=BATCH_SIZE,
-        train_transform=None,
-        val_transform=val_transform,
         num_workers=NUM_WORKERS,
         pin_memory=PIN_MEMORY,
+        shuffle=False,
     )
+
 
     print("🔍 Running evaluation...")
     avg_dice, avg_iou = evaluate(val_loader, model, DEVICE)

@@ -80,13 +80,25 @@ def check_accuracy(loader, model, device="cuda"):
     model.train()
 
 def save_predictions_as_imgs(loader, model, folder="saved_images/", device="cuda"):
-    os.makedirs(folder, exist_ok=True)
     model.eval()
+    os.makedirs(folder, exist_ok=True)
+
     for idx, (x, y) in enumerate(loader):
-        x = x.to(device)
+        x = x.to(device=device)
+
         with torch.no_grad():
-            preds = torch.sigmoid(model(x))
+            outputs = model(x)
+
+            # Jika model mengembalikan beberapa output (seperti U2NET)
+            if isinstance(outputs, (list, tuple)):
+                preds = torch.sigmoid(outputs[0])
+            else:
+                preds = torch.sigmoid(outputs)
+
             preds = (preds > 0.5).float()
+
         torchvision.utils.save_image(preds, f"{folder}/pred_{idx}.png")
-        torchvision.utils.save_image(y.unsqueeze(1), f"{folder}/{idx}.png")
+        torchvision.utils.save_image(y.unsqueeze(1), f"{folder}/gt_{idx}.png")
+
     model.train()
+
